@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'sinatra'
+
+BASE_DIR=ENV["HOME"]
+
+post '/update/:user/:repo' do
+
+  repo = "#{BASE_DIR}/#{params[:user]}/#{params[:repo]}.git"
+
+  if File.directory? repo
+    %x{git --git-dir #{repo} fetch --all --prune}
+  end
+end
+
