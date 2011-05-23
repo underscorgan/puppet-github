@@ -71,18 +71,6 @@ define github::mirror (
         logoutput => true,
         require   => Exec["git-clone-$github_user-$repo_name"],
       }
-
-
-      if ! defined(Exec["git-daemon"]) {
-        exec { "git-daemon":
-          path      => [ "/bin", "/usr/bin" ],
-          user      => $user,
-          group     => $group,
-          command   => "git daemon --detach --reuseaddr --base-path=$basedir --base-path-relaxed --pid-file=$basedir/.git-daemon.pid $basedir",
-          logoutput => true,
-          unless    => "pgrep -U $user git-daemon",
-        }
-      }
     }
     absent: {
       file { "$repo":

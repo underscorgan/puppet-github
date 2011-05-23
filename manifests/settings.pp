@@ -19,6 +19,4 @@ class github::settings (
   $group = "git",
   $basedir = "/home/git",
 ) {
-  User <| name == $user |>
-  Group <| name == $group |>
 }

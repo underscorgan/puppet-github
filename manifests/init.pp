@@ -18,6 +18,9 @@ class github {
   $group = $github::settings::group
   $basedir = $github::settings::basedir
 
+  User <| name == $user |>
+  Group <| name == $group |>
+
   file { "$basedir/github-listener":
     ensure  => present,
     source  => "puppet:///modules/github/github-listener",
@@ -40,6 +43,14 @@ class github {
     unless    => "$ps | grep -v grep | grep github-listener",
     require   => [ File["$basedir/github-listener"], Package["sinatra"]],
     subscribe => File["$basedir/github-listener"],
+  }
 
+  exec { "git-daemon":
+    path      => [ "/bin", "/usr/bin" ],
+    user      => $user,
+    group     => $group,
+    command   => "git daemon --detach --reuseaddr --base-path=$basedir --base-path-relaxed --pid-file=$basedir/.git-daemon.pid $basedir",
+    logoutput => true,
+    unless    => "pgrep -U $user git-daemon",
   }
 }
