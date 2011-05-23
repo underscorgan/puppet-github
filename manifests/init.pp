@@ -23,7 +23,10 @@ class github {
     user      => $user,
     group     => $group,
     command   => "$basedir/github-listener &",
+    refresh   => "pkill github-listener; $basedir/github-listener &",
     unless    => "$ps | grep -v grep | grep github-listener",
-    require   => File ["$basedir/github-listener"]
+    require   => [ File["$basedir/github-listener"], Package["sinatra"]],
+    subscribe => File["$basedir/github-listener"],
+
   }
 }
