@@ -20,21 +20,34 @@ define github::mirror (
         }
       }
 
-      vcsrepo { "$repo":
-        ensure    => bare,
-        provider  => "git",
-        source    => "https://github.com/$github_user/$repo_name.git",
-        require   => File["$basedir/$github_user"],
+      # This would be the preferred method of handling this, but vcsrepo
+      # cannot user switch, not can it handle ownership of the files  changing.
+      #vcsrepo { "$repo":
+      #  ensure    => bare,
+      #  provider  => "git",
+      #  source    => "https://github.com/$github_user/$repo_name.git",
+      #  require   => File["$basedir/$github_user"],
+      #}
+
+      #file { "$repo":
+      #  ensure  => directory,
+      #  owner   => $user,
+      #  group   => $group,
+      #  recurse => true,
+      #  backup  => false,
+      #  require => Vcsrepo[$repo],
+      #}
+
+      exec { "git-clone-$github_user-$repo_name":
+        path      => [ "/bin", "/usr/bin" ],
+        command   => "git clone --bare https://github.com/$github_user/$repo_name.git $repo",
+        cwd       => $basedir,
+        creates   => $repo,
+        user      => $user,
+        group     => $group,
+        logoutput => on_failure,
       }
 
-      file { "$repo":
-        ensure  => directory,
-        owner   => $user,
-        group   => $group,
-        recurse => true,
-        backup  => false,
-        require => Vcsrepo[$repo],
-      }
 
       exec { "git-export-$github_user-$repo_name":
         path      => [ "/bin", "/usr/bin" ],
@@ -42,7 +55,7 @@ define github::mirror (
         user      => $user,
         group     => $group,
         logoutput => true,
-        require   => [Vcsrepo[$repo], File[$repo]]
+        require   => Exec["git-clone-$github_user-$repo_name"],
       }
 
       if ! defined(Exec["git-daemon"]) {
