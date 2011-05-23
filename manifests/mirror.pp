@@ -52,6 +52,7 @@ define github::mirror (
       exec { "git-export-$github_user-$repo_name":
         path      => [ "/bin", "/usr/bin" ],
         command   => "touch $repo/git-daemon-export-ok",
+        creates   => "$repo/git-daemon-export-ok",
         user      => $user,
         group     => $group,
         logoutput => true,
@@ -65,6 +66,7 @@ define github::mirror (
           group     => $group,
           command   => "git daemon --detach --reuseaddr --base-path=$basedir --base-path-relaxed --pid-file=$basedir/.git-daemon.pid $basedir",
           logoutput => true,
+          unless    => "pgrep -U $user git-daemon",
         }
       }
     }
