@@ -1,4 +1,17 @@
-
+# Class: github
+#
+# This class provides for the mirroring of github repos
+#
+# Parameters:
+#
+# Actions:
+#   - Instantiates the github::settings::user
+#   - Instantiates the github::settings::group
+# Requires:
+#   - github::settings
+#
+# Sample Usage:
+#   See README
 class github {
 
   $user = $github::settings::user

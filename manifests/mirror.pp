@@ -1,6 +1,20 @@
+# Class: github::mirror
+#
+# This class instantiates a github mirror and sets up
+#
+# Parameters:
+#
+# Actions:
+# Requires:
+#   - github::settings
+#
+# Sample Usage:
+#   See README
 define github::mirror (
   $ensure
 ) {
+
+  include github
 
   $user = $github::settings::user
   $group = $github::settings::group
@@ -48,7 +62,6 @@ define github::mirror (
         logoutput => on_failure,
       }
 
-
       exec { "git-export-$github_user-$repo_name":
         path      => [ "/bin", "/usr/bin" ],
         command   => "touch $repo/git-daemon-export-ok",
@@ -58,6 +71,7 @@ define github::mirror (
         logoutput => true,
         require   => Exec["git-clone-$github_user-$repo_name"],
       }
+
 
       if ! defined(Exec["git-daemon"]) {
         exec { "git-daemon":
