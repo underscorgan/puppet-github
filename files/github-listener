@@ -11,6 +11,9 @@ post '/update/:user/:repo' do
 
   if File.directory? repo
     %x{git --git-dir #{repo} fetch --all --prune}
+    200
+  else
+    404
   end
 end
 
