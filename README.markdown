@@ -21,8 +21,6 @@ Mirrors github repositories locally
       basedir => "/home/git"
     }
 
-    include github
-
     github::mirror { 
       "puppetlabs/puppet":
         ensure => present;
