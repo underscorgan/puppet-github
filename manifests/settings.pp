@@ -17,6 +17,6 @@
 class github::settings (
   $user = "git",
   $group = "git",
-  $basedir = "/home/git",
+  $basedir = "/home/git"
 ) {
 }

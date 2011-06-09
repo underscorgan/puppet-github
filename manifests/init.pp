@@ -27,6 +27,10 @@ class github {
     owner   => $user,
     group   => $group,
     mode    => "0755",
+    require => [
+      User[$user],
+      Group[$group],
+    ],
   }
 
   package { "sinatra":
@@ -41,7 +45,12 @@ class github {
     command   => "$basedir/github-listener &",
     refresh   => "(pkill -f github-listener; sleep 10; $basedir/github-listener &) &",
     unless    => "$ps | grep -v grep | grep github-listener",
-    require   => [ File["$basedir/github-listener"], Package["sinatra"]],
+    require   => [
+      User[$user],
+      Group[$group],
+      File["$basedir/github-listener"],
+      Package["sinatra"]
+    ],
     subscribe => File["$basedir/github-listener"],
   }
 
@@ -52,5 +61,9 @@ class github {
     command   => "git daemon --detach --reuseaddr --base-path=$basedir --base-path-relaxed --pid-file=$basedir/.git-daemon.pid $basedir",
     logoutput => true,
     unless    => "pgrep -U $user git-daemon",
+    require   => [
+      User[$user],
+      Group[$group],
+    ],
   }
 }
