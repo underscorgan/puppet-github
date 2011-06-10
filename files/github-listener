@@ -1,19 +1,116 @@
 #!/usr/bin/env ruby
+# github-listener
+#
+# Creates a simple webserver listens for queries in the form of
+# update/github_user/repo, and then mirrors it.
+#
+# Repositories that do not exist will not be cloned, for security concerns.
+#
+# Bugs: the daemonizing code is the majority of the program. Less dependencies
+#       at the cost of minor bloating.
 
+require 'optparse'
+require 'fileutils'
 require 'rubygems'
-require 'sinatra'
 
-BASE_DIR=ENV["HOME"]
+BASE_DIR= File.dirname(__FILE__)
+PIDFILE = "#{BASE_DIR}/.github-listener.pid"
 
-post '/update/:user/:repo' do
+def background
 
-  repo = "#{BASE_DIR}/#{params[:user]}/#{params[:repo]}.git"
+  if Kernel.fork.nil?
+    $0 = "github-listener"
+    $stdout.reopen("#{BASE_DIR}/github-listener.out", "w")
+    $stderr.reopen("#{BASE_DIR}/github-listener.err", "w")
+    Process.setsid
 
-  if File.directory? repo
-    %x{git --git-dir #{repo} fetch --all --prune}
-    200
+    # Store pid so we can kill the exact daemonized process.
+    puts "pidfile is #{PIDFILE}"
+    File.open(PIDFILE, "w") { |file| file.write($$) }
+
+    # Clean up pidfile on exit
+    at_exit do
+      begin
+        $stderr.puts "Cleaning up pidfile"
+        FileUtils.rm PIDFILE
+      rescue
+      end
+    end
+    puts "Launching server"
+    runserver
+    puts "How did I get here?"
   else
-    404
+    exit
+  end
+
+end
+
+# run the webserver itself.
+def runserver
+  require 'sinatra'
+
+  post '/update/:user/:repo' do
+
+    repo = "#{BASE_DIR}/#{params[:user]}/#{params[:repo]}.git"
+
+    if File.directory? repo
+      %x{git --git-dir #{repo} fetch --all --prune}
+      200
+    else
+      $stderr.puts "No such repo #{repo}"
+      404
+    end
   end
 end
 
+def killserver
+  begin
+    pid = File.open(PIDFILE) { |f| f.read }
+    Process.kill("TERM", pid.to_i)
+    puts "TERM pid #{pid}"
+    pid
+  rescue => e
+    puts "Failed to kill pid #{pid}: #{e}"
+    nil
+  end
+end
+
+def status
+  if File.exists? PIDFILE
+    begin
+      pid = File.open(PIDFILE) { |f| f.read }
+      Process.getpgid(pid)
+      pid
+    rescue => e
+      nil
+    end
+  end
+end
+
+
+# Determine action to take
+# This cannot be done using optionpaser AFAIK, because sinatra uses optparser
+# as well, and clobbers any options we add. To cope, we scan ARGV for an action.
+if ARGV.any? { |v| v == "background" }
+  background unless status
+elsif ARGV.any? { |v| v == "foreground" }
+  runserver
+elsif ARGV.any? { |v| v == "kill" }
+  killserver
+elsif ARGV.any? { |v| v == "status" }
+  pid = status
+  if pid
+    puts "Running with pid #{pid}."
+    exit 0
+  else
+    puts "Not running."
+    exit 1
+  end
+elsif ARGV.any? { |v| v == "restart" }
+  killserver
+  sleep 2
+  background
+else
+  $stderr.puts "Error: no action specified"
+  exit 1
+end

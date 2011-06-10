@@ -39,12 +39,11 @@ class github {
   }
 
   exec { "github-listener":
-    path      => [ "/bin", "/usr/bin" ],
     user      => $user,
     group     => $group,
-    command   => "$basedir/github-listener &",
-    refresh   => "(pkill -f github-listener; sleep 10; $basedir/github-listener &) &",
-    unless    => "$ps | grep -v grep | grep github-listener",
+    command   => "$basedir/github-listener background",
+    refresh   => "$basedir/github-listener restart",
+    unless    => "$basedir/github-listener status",
     require   => [
       User[$user],
       Group[$group],
@@ -52,6 +51,7 @@ class github {
       Package["sinatra"]
     ],
     subscribe => File["$basedir/github-listener"],
+    logoutput => true,
   }
 
   exec { "git-daemon":
