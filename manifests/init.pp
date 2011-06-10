@@ -18,8 +18,8 @@ class github {
   $group = $github::settings::group
   $basedir = $github::settings::basedir
 
-  User <| name == $user |>
-  Group <| name == $group |>
+  realize(User[$user])
+  realize(Group[$group])
 
   file { "$basedir/github-listener":
     ensure  => present,
