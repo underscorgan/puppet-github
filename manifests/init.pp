@@ -21,7 +21,7 @@ class github {
   realize(User[$user])
   realize(Group[$group])
 
-  file { "$basedir/github-listener":
+  file { "${basedir}/github-listener":
     ensure  => present,
     source  => "puppet:///modules/github/github-listener",
     owner   => $user,
@@ -42,25 +42,23 @@ class github {
     path      => [ "/bin", "/usr/bin" ],
     user      => $user,
     group     => $group,
-    command   => "$basedir/github-listener &",
-    refresh   => "(pkill -f github-listener; sleep 10; $basedir/github-listener &) &",
+    provider  => "shell",
+    command   => "${basedir}/github-listener &",
     unless    => "$ps | grep -v grep | grep github-listener",
     require   => [
-      User[$user],
-      Group[$group],
-      File["$basedir/github-listener"],
+      File["${basedir}/github-listener"],
       Package["sinatra"]
     ],
-    subscribe => File["$basedir/github-listener"],
+    subscribe => File["${basedir}/github-listener"],
   }
 
   exec { "git-daemon":
-    path      => [ "/bin", "/usr/bin" ],
+    path      => [ "/bin", "/usr/bin", "/opt/local/bin" ],
     user      => $user,
     group     => $group,
-    command   => "git daemon --detach --reuseaddr --base-path=$basedir --base-path-relaxed --pid-file=$basedir/.git-daemon.pid $basedir",
+    command   => "git daemon --detach --reuseaddr --base-path=${basedir} --base-path-relaxed --pid-file=${basedir}/.git-daemon.pid ${basedir}",
     logoutput => true,
-    unless    => "pgrep -U $user git-daemon",
+    unless    => "$ps | grep -v grep | grep git-daemon",
     require   => [
       User[$user],
       Group[$group],
