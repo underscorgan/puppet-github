@@ -31,3 +31,6 @@ post '/update/:user/:repo' do
   end
 end
 
+not_found do
+  404
+end
