@@ -55,7 +55,7 @@ define github::mirror (
       #}
 
       exec { "git-clone-$github_user-$repo_name":
-        path      => [ "/bin", "/usr/bin" ],
+        path      => [ "/bin", "/usr/bin", "/opt/local/bin" ],
         command   => "git clone --bare https://github.com/$github_user/$repo_name.git $repo",
         cwd       => $basedir,
         creates   => $repo,
@@ -65,7 +65,7 @@ define github::mirror (
       }
 
       exec { "git-export-$github_user-$repo_name":
-        path      => [ "/bin", "/usr/bin" ],
+        path      => [ "/bin", "/usr/bin", "/opt/local/bin" ],
         command   => "touch $repo/git-daemon-export-ok",
         creates   => "$repo/git-daemon-export-ok",
         user      => $user,

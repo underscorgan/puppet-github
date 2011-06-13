@@ -5,8 +5,10 @@
 # Parameters:
 #
 # Actions:
-#   - Instantiates the github::settings::user
-#   - Instantiates the github::settings::group
+#   - Realizes the github::settings::user
+#   - Realizes the github::settings::group
+#   - Starts up github-listener
+#   - Starts up git-daemon
 # Requires:
 #   - github::settings
 #
