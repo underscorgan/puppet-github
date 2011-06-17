@@ -23,47 +23,24 @@ class github {
   realize(User[$user])
   realize(Group[$group])
 
-  file { "${basedir}/github-listener":
+  file { "${basedir}/config.ru":
     ensure  => present,
-    source  => "puppet:///modules/github/github-listener",
+    source  => "puppet:///modules/github/config.ru",
     owner   => $user,
     group   => $group,
     mode    => "0755",
-    require => [
-      User[$user],
-      Group[$group],
-    ],
+  }
+
+  file { "${basedir}/listener.rb":
+    ensure  => present,
+    source  => "puppet:///modules/github/listener.rb",
+    owner   => $user,
+    group   => $group,
+    mode    => "0755",
   }
 
   package { "sinatra":
     ensure    => present,
     provider  => "gem",
-  }
-
-  exec { "github-listener":
-    path      => [ "/bin", "/usr/bin" ],
-    user      => $user,
-    group     => $group,
-    provider  => "shell",
-    command   => "${basedir}/github-listener &",
-    unless    => "$ps | grep -v grep | grep github-listener",
-    require   => [
-      File["${basedir}/github-listener"],
-      Package["sinatra"]
-    ],
-    subscribe => File["${basedir}/github-listener"],
-  }
-
-  exec { "git-daemon":
-    path      => [ "/bin", "/usr/bin", "/opt/local/bin" ],
-    user      => $user,
-    group     => $group,
-    command   => "git daemon --detach --reuseaddr --base-path=${basedir} --base-path-relaxed --pid-file=${basedir}/.git-daemon.pid ${basedir}",
-    logoutput => true,
-    unless    => "$ps | grep -v grep | grep git-daemon",
-    require   => [
-      User[$user],
-      Group[$group],
-    ],
   }
 }
