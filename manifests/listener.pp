@@ -20,7 +20,7 @@ class github::listener {
       mode    => "0640";
     "${wwwroot}/listener.rb":
       ensure  => present,
-      source  => "puppet:///modules/github/listener.rb",
+      content => template("github/config.ru.erb"),
       owner   => $user,
       group   => $group,
       mode    => "0640";
