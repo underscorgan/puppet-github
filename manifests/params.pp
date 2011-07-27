@@ -1,4 +1,4 @@
-# Class: github::settings
+# Class: github::params
 #
 # This class provides for the overriding of the default user, group, and
 # basedir
@@ -7,16 +7,12 @@
 #   - user
 #   - group
 #   - basedir
+#   - wwwroot
 #
-# Actions:
-#
-# Requires:
-
-# Sample Usage:
-#   See README
-class github::settings (
+class github::params (
   $user = "git",
   $group = "git",
+  $wwwroot = "/var/www/html",
   $basedir = "/home/git"
 ) {
 }

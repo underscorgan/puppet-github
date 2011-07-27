@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'sinatra'
 
-BASE_DIR = File.dirname(__FILE__)
+BASE_DIR = "/home/git/gitolite/repositories"
 
 post '/update/:user/:repo' do
 
