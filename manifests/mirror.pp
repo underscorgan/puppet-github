@@ -4,6 +4,7 @@ define github::mirror (
   $ensure  = present,
   $private = false
 ) {
+  include concat::setup
   include github::listener
 
   $user = $github::params::user

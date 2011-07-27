@@ -8,11 +8,12 @@
 #   - group
 #   - basedir
 #   - wwwroot
+#   - vhost_name
 #
 class github::params (
   $user = "git",
   $group = "git",
   $wwwroot = "/var/www/html",
-  $basedir = "/home/git"
-) {
-}
+  $basedir = "/home/git",
+  $vhost_name = 'git'
+) { }

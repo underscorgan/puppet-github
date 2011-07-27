@@ -6,10 +6,11 @@
 class github::listener {
   include apache
 
-  $user = $github::params::user
-  $group = $github::params::group
-  $basedir = $github::params::basedir
-  $wwwroot = $github::params::wwwroot
+  $user       = $github::params::user
+  $group      = $github::params::group
+  $basedir    = $github::params::basedir
+  $wwwroot    = $github::params::wwwroot
+  $vhost_name = $github::params::vhost_name
 
   file {
     "${wwwroot}/config.ru":
@@ -58,7 +59,7 @@ class github::listener {
     provider  => "gem",
   }
 
-  apache::vhost { "git.puppetlabs.lan":
+  apache::vhost { $vhost_name:
     port     => "4567",
     priority => "20",
     docroot  => $wwwroot,
