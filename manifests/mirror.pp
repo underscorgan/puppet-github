@@ -7,12 +7,12 @@ define github::mirror (
   include concat::setup
   include github::listener
 
-  $user = $github::params::user
-  $group = $github::params::group
+  $user    = $github::params::user
+  $group   = $github::params::group
   $basedir = $github::params::basedir
 
   $github_user = regsubst($name, '^(.*?)/.*$', '\1')
-  $repo_name = regsubst($name, '^.*/(.*$)', '\1')
+  $repo_name   = regsubst($name, '^.*/(.*$)', '\1')
 
   # The location of the repository on the disk
   $repo_path = "${basedir}/${github_user}-${repo_name}.git"
@@ -24,9 +24,8 @@ define github::mirror (
   case $ensure {
     present: {
 
-      exec { "git-clone-${github_user}-${repo_name}":
+      exec { "git clone --mirror ${repo_url} ${repo_path}":
         path      => [ "/bin", "/usr/bin", "/opt/local/bin" ],
-        command   => "git clone --bare ${repo_url} ${repo_path}",
         cwd       => $basedir,
         creates   => $repo_path,
         user      => $user,
@@ -36,7 +35,7 @@ define github::mirror (
 
       concat::fragment { $name:
         ensure  => present,
-        content => "${name}: ${repo_url}",
+        content => "${name}, ${repo_url}",
         target  => "${basedir}/.github-allowed",
       }
     }
@@ -50,7 +49,7 @@ define github::mirror (
 
       concat::fragment { $name:
         ensure  => absent,
-        content => "${name}: ${repo_url}",
+        content => "${name}, ${repo_url}",
         target  => "${basedir}/.github-allowed",
       }
     }

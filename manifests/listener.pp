@@ -15,26 +15,26 @@ class github::listener {
   file {
     "${wwwroot}/config.ru":
       ensure  => present,
-      source  => "puppet:///modules/github/config.ru",
-      owner   => $user,
-      group   => $group,
-      mode    => "0640";
-    "${wwwroot}/listener.rb":
-      ensure  => present,
       content => template("github/config.ru.erb"),
       owner   => $user,
       group   => $group,
-      mode    => "0640";
+      mode    => "0644";
+    "${wwwroot}/listener.rb":
+      ensure  => present,
+      source  => "puppet:///modules/github/listener.rb",
+      owner   => $user,
+      group   => $group,
+      mode    => "0644";
     "${wwwroot}/public":
       ensure  => directory,
       owner   => $user,
       group   => $group,
-      mode    => "0640";
+      mode    => "0755";
     "${wwwroot}/tmp":
       ensure  => directory,
       owner   => $user,
       group   => $group,
-      mode    => "0640";
+      mode    => "0755";
   }
 
   exec { "touch ${wwwroot}/tmp/restart.txt":
@@ -62,7 +62,7 @@ class github::listener {
   apache::vhost { $vhost_name:
     port     => "4567",
     priority => "20",
-    docroot  => $wwwroot,
+    docroot  => "${wwwroot}/public",
     ssl      => false,
     template => "github/github-listener.conf.erb",
   }
