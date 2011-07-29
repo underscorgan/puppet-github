@@ -9,11 +9,12 @@
 #   - basedir
 #   - wwwroot
 #   - vhost_name
-#
+#   - verbose
 class github::params (
-  $user = "git",
-  $group = "git",
-  $wwwroot = "/var/www/html",
-  $basedir = "/home/git",
-  $vhost_name = 'git'
+  $user       = "git",
+  $group      = "git",
+  $wwwroot    = "/var/www/html",
+  $basedir    = "/home/git",
+  $vhost_name = 'git',
+  $verbose    = false
 ) { }

@@ -11,6 +11,7 @@ class github::listener {
   $basedir    = $github::params::basedir
   $wwwroot    = $github::params::wwwroot
   $vhost_name = $github::params::vhost_name
+  $verbose    = $github::params::verbose
 
   file {
     "${wwwroot}/config.ru":
