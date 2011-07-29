@@ -10,6 +10,8 @@ class Listener < Sinatra::Base
     allowed = {}
 
     # Parse out repositories we're allowed to update from github
+    # Format is "user/repo, url", where user/repo reflects the github path
+    # and url is the associated address to fetch
     begin
       File.open("#{settings.basedir}/.github-allowed") do |file|
         file.each do |line|
@@ -27,7 +29,11 @@ class Listener < Sinatra::Base
     identifier = "#{params[:user]}/#{params[:repo]}"
     if File.directory? repo_path
       if allowed.keys.include? identifier
-        cmd = %Q{git --git-dir #{repo_path} fetch #{allowed[identifier]} --prune}
+
+        # If the requested directory exists and is allowed, pull it.
+        # Otherwise, log to stderr/apache error.log why things failed
+        # and 404
+        cmd = %Q{git --git-dir #{repo_path} fetch --all --verbose --prune}
         $stderr.puts %Q{Updating repo #{identifier} with command "#{cmd}"}
         %x{#{cmd}}
         status = 200
