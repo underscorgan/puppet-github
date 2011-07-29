@@ -13,6 +13,7 @@ class Listener < Sinatra::Base
     begin
       File.open("#{settings.basedir}/.github-allowed") do |file|
         file.each do |line|
+          line.chomp!
           identifier, url = line.split(', ', 2)
           allowed[identifier] = url
         end
@@ -27,7 +28,7 @@ class Listener < Sinatra::Base
     if File.directory? repo_path
       if allowed.keys.include? identifier
         cmd = %Q{git --git-dir #{repo_path} fetch #{allowed[identifier]} --prune}
-        $stderr.puts %Q{Updating repo #{identifier} with command #{cmd}"}
+        $stderr.puts %Q{Updating repo #{identifier} with command "#{cmd}"}
         %x{#{cmd}}
         status = 200
       else
