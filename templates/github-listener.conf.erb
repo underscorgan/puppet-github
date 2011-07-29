@@ -3,6 +3,7 @@
 # Managed by Puppet
 # ************************************
 
+Listen 4567
 NameVirtualHost *:<%= port %>
 <VirtualHost *:<%= port %>>
   ServerName <%= name %>
@@ -11,12 +12,11 @@ NameVirtualHost *:<%= port %>
 <% elsif serveraliases != '' -%>
 <%= "  ServerAlias #{serveraliases}" -%>
 <% end -%>
+  PassengerUserSwitching on
   DocumentRoot <%= docroot %>
   <Directory <%= docroot %>>
-    Options Indexes FollowSymLinks -MultiViews
-    AllowOverride None
-    Order allow,deny
     allow from all
+    Options -MultiViews
   </Directory>
   ErrorLog /var/log/apache2/<%= name %>_error.log
   LogLevel warn

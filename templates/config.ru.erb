@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'sinatra'
-
-Sinatra::Application.default_options.merge!(
-  :run => false,
-  :env => ENV['RACK_ENV']
-)
-
 require 'listener'
-run Sinatra.application
+
+Listener.set :run, false
+Listener.set :env, ENV['RACK_ENV']
+Listener.set :port, 4567
+Listener.set :basedir, "<%= basedir %>"
+
+run Listener
