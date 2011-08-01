@@ -5,20 +5,26 @@ destroy repositories before the heat death of the universe!
 
 ## Synopsis ##
 
-    class { "github::settings":
-      user    => "git",
-      group   => "git",
-      basedir => "/home/git"
-      wwwroot => "/var/www/vhosts/git",
-      vhost_name => "git.mydomain.com",
+
+    class { "github::params":
+      user    => "gitmirror",
+      group   => "gitmirror",
+      basedir => "/home/gitmirror",
+      wwwroot => "/var/www/gitmirror",
+      vhost_name => "git",
     }
 
-    github::mirror { "puppetlabs/puppet":
-      ensure => present,
+    file { "/var/www/gitmirror":
+      ensure => directory,
+      owner  => "gitmirror",
+      group  => "gitmirror",
+      mode   => "0755",
     }
 
-    github::mirror { "dr_evil/doomsday-device":
-      ensure  => present,
-      private => true,
+    github::mirror {
+      "puppetlabs/puppet":
+        ensure => present;
+      "supersecret/world-domination-plans":
+        ensure  => present,
+        private => true;
     }
-
