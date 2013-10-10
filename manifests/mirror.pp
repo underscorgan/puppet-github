@@ -13,7 +13,7 @@ define github::mirror (
 
   $github_user   = regsubst($name, '^(.*?)/.*$', '\1')
   $repo_name     = regsubst($name, '^.*/(.*$)', '\1')
-  $fragment_name = regsubst($name, '/', '_', 'g')
+  $fragment_name = regsubst($name, '/', '_', 'G')
 
   # The location of the repository on the disk
   $repo_path = "${basedir}/${github_user}-${repo_name}.git"
