@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'sinatra'
-require 'listener'
+require './listener'
 
 Listener.set :run, false
 Listener.set :env, ENV['RACK_ENV']
