@@ -5,6 +5,7 @@
 # TODO doc
 class github::listener {
   include apache
+  include apache::mod::passenger
   include concat::setup
 
   $user       = $github::params::user
