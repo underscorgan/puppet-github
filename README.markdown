@@ -1,16 +1,15 @@
-# Puppet Github mirroring #
+# Puppet GitHub mirroring #
 
-Mirror your massive github mirrors locally, so that you can rapidly create and
+Mirror your massive GitHub repos locally, so that you can rapidly create and
 destroy repositories before the heat death of the universe!
 
 ## Synopsis ##
 
-
     class { "github::params":
-      user    => "gitmirror",
-      group   => "gitmirror",
-      basedir => "/home/gitmirror",
-      wwwroot => "/var/www/gitmirror",
+      user       => "gitmirror",
+      group      => "gitmirror",
+      basedir    => "/home/gitmirror",
+      wwwroot    => "/var/www/gitmirror",
       vhost_name => "git",
     }
 
