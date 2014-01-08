@@ -1,8 +1,9 @@
 # Class: github::mirror
 #
 define github::mirror (
-  $ensure  = present,
-  $private = false
+  $ensure     = present,
+  $private    = false,
+  $exportable = false
 ) {
   include concat::setup
   include github::listener
@@ -32,6 +33,10 @@ define github::mirror (
         user      => $user,
         group     => $group,
         logoutput => on_failure,
+      }
+
+      if $exportable {
+        file { "${repo_path}/git-daemon-export-ok": ensure => file }
       }
 
       concat::fragment { $fragment_name:
