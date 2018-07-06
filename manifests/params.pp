@@ -11,10 +11,11 @@
 #   - vhost_name
 #   - verbose
 class github::params (
-  $user       = "git",
-  $group      = "git",
-  $wwwroot    = "/var/www/html",
-  $basedir    = "/home/git",
-  $vhost_name = 'git',
-  $verbose    = false
+  $user         = "git",
+  $group        = "git",
+  $wwwroot      = "/var/www/html",
+  $basedir      = "/home/git",
+  $vhost_name   = 'git',
+  $verbose      = false,
+  $http_log_dir = '/var/log/apache2',
 ) { }
