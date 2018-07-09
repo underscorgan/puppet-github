@@ -63,10 +63,11 @@ class github::listener {
   }
 
   apache::vhost { $vhost_name:
-    port     => "4567",
-    priority => "20",
-    docroot  => "${wwwroot}/public",
-    ssl      => false,
-    template => "github/github-listener.conf.erb",
+    port         => "4567",
+    priority     => "20",
+    docroot      => "${wwwroot}/public",
+    ssl          => false,
+    http_log_dir => $http_log_dir,
+    template     => "github/github-listener.conf.erb",
   }
 }
