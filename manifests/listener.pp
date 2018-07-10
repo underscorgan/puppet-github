@@ -7,13 +7,13 @@ class github::listener {
   include apache
   include apache::mod::passenger
 
-  $user         = $github::params::user
-  $group        = $github::params::group
-  $basedir      = $github::params::basedir
-  $wwwroot      = $github::params::wwwroot
-  $vhost_name   = $github::params::vhost_name
-  $verbose      = $github::params::verbose
-  $http_log_dir = $github::params::http_log_dir
+  $user       = $github::params::user
+  $group      = $github::params::group
+  $basedir    = $github::params::basedir
+  $wwwroot    = $github::params::wwwroot
+  $vhost_name = $github::params::vhost_name
+  $verbose    = $github::params::verbose
+  $log_dir    = $github::params::http_log_dir
 
   file {
     "${wwwroot}/config.ru":
@@ -67,7 +67,7 @@ class github::listener {
     priority     => "20",
     docroot      => "${wwwroot}/public",
     ssl          => false,
-    http_log_dir => $http_log_dir,
+    http_log_dir => $log_dir,
     template     => "github/github-listener.conf.erb",
   }
 }

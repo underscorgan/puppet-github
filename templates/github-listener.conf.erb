@@ -17,8 +17,8 @@ NameVirtualHost *:<%= @port %>
     allow from all
     Options -MultiViews
   </Directory>
-  ErrorLog <%= @http_log_dir %>/<%= @name %>_error.log
+  ErrorLog <%= @log_dir %>/<%= @name %>_error.log
   LogLevel warn
-  CustomLog <%= @http_log_dir %>/<%= @name %>_access.log combined
+  CustomLog <%= @log_dir %>/<%= @name %>_access.log combined
   ServerSignature On
 </VirtualHost>
