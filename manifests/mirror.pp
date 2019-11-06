@@ -39,7 +39,6 @@ define github::mirror (
       }
 
       concat::fragment { $fragment_name:
-        ensure  => present,
         content => "${name}\n",
         target  => "${basedir}/.github-allowed",
       }
@@ -53,7 +52,6 @@ define github::mirror (
       }
 
       concat::fragment { $fragment_name:
-        ensure  => absent,
         content => "${name}\n",
         target  => "${basedir}/.github-allowed",
       }
